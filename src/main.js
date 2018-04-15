@@ -1,26 +1,30 @@
 const electron = require('electron');
 const images = require('./images');
+const menuTemplate = require('./menu');
 
-const { app, BrowserWindow, ipcMain: ipc } = electron;
+const { app, BrowserWindow, ipcMain: ipc, Menu } = electron;
 
 let mainWindow = null;
 
 app.on('ready', _ => {
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 893,
     height: 725,
     resizable: false
   });
 
   mainWindow.loadURL(`file://${__dirname}/capture.html`);
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   
   images.mkdir(images.getPicturesDir(app));
 
   mainWindow.on('closed', _ => {
     mainWindow = null;
   });
+
+  const menuContents = Menu.buildFromTemplate(menuTemplate(mainWindow));
+  Menu.setApplicationMenu(menuContents);
 });
 
 ipc.on('image-captured', (evt, contents) => {

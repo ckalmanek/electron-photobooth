@@ -1,10 +1,16 @@
 const video = require('./video');
 const countdown = require('./countdown');
+const flash = require('./flash');
+const effects = require('./effects');
 const electron = require('electron');
 
 const { ipcRenderer: ipc, shell, remote } = electron;
 
 const images = remote.require('./images'); // access images cache in main process
+
+let canvasTarget;
+let seriously;
+let videoSrc;
 
 const formatImgTag = (doc, bytes) => {
   const div = doc.createElement('div');
@@ -25,15 +31,25 @@ window.addEventListener('DOMContentLoaded', _ => {
   const recordEl = document.getElementById('record');
   const photosEl = document.getElementById('photos');
   const counterEl = document.getElementById('counter');
+  const flashEl = document.getElementById('flash');
 
-  const ctx = canvasEl.getContext('2d');
+  // canvas context is not available since seriously has grabbed it
+  // const ctx = canvasEl.getContext('2d');
+
+  seriously = new Seriously();
+  videoSrc = seriously.source('#video');
+  canvasTarget = seriously.target('#canvas');
+  effects.choose(seriously, videoSrc, canvasTarget);
 
   video.init(navigator, videoEl);
 
   recordEl.addEventListener('click', _ => {
     const setCount = count => counterEl.innerHTML = count > 0 ? count : '';
     countdown.start(3, setCount, _ => {
-      const bytes = video.captureBytes(videoEl, ctx, canvas);
+      flash(flashEl);
+      // can't get context, so capture bytes from live canvas
+      // const bytes = video.captureBytes(videoEl, ctx, canvas);      
+      const bytes = video.captureBytesFromLiveCanvas(canvasEl);
       ipc.send('image-captured', bytes);
       photosEl.appendChild(formatImgTag(document, bytes));
     });
@@ -58,4 +74,12 @@ window.addEventListener('DOMContentLoaded', _ => {
 
 ipc.on('image-removed', (evt, index) => {
   document.getElementById('photos').removeChild(Array.from(document.querySelectorAll('.photo'))[index]);
+});
+
+ipc.on('effect-choose', (evt, effectName) => {
+  effects.choose(seriously, videoSrc, canvasTarget, effectName);
+});
+
+ipc.on('effect-cycle', evt => {
+  effects.cycle(seriously, videoSrc, canvasTarget);
 });
