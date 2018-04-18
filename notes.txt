@@ -1,0 +1,58 @@
+Use Affinity Designer or similar to create icon, 512x512px or smaller
+Use iconverticons.com/online to convert to platform specific format
+.png -> .icns for Mac, .ico for Windows, .png for Linux
+Place app.extension in root of project
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/daniel-bruce" title="Daniel Bruce">Daniel Bruce</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>ph
+
+Testing on other OSs
+
+WINDOWS
+
+Download and install Virtual Box
+Download and install Windows VM for Virtual Box (e.g., Windows Edge on Win 10 Stable)
+Download and install the unarchiver.c3.cx/unarchiver
+Download and install Wine to run Windows VM on Mac
+
+See www.davidbaumgold.com/tutorials/wine-mac
+
+To install Windows VM in Virtual Box, click on .ova file that you archived
+Use Virtual Box defaults
+
+To get our app into vm, setup file sharing over the network
+Install VB guest additions by going to device menu, insert guest additions VM process
+Go to devices menu, shared folders settings, select option to add a folder, browse to project folder, 
+  select it, mark network share as read-only, auto-mount, and make permanent
+Go to file explorer, network area, find vbox server computer, click it to find mounted private directory
+Drag whole win32-x64 app directory into VM
+
+Also need to set up web cam access for VM
+Need to download and install virtual box extension pack
+
+shut down VM, right click on VM, select ,settings port, usb, 
+  select enable usb controller
+restart VM
+go to devices, web cams, check the appropriate option (FaceTime camera)
+
+LINUX
+
+Download ISO image of Ubuntu desktop
+Set up new Linux VM in VB
+
+Name and OS
+Memory size: 768 MB
+Create virtual hard disk
+Hard disk file type: VDI
+Storage: dynamically allocated
+File location and size: 8 GB
+Point VM to use the ISO that we just downloaded
+Then follow Ubuntu installation steps
+
+Then, as before, insert guest additions image
+Then need to mount local dev project directory so it's available inside vm
+Go to devices, shared folders, shared folders settings 
+navigate to mounted shared directory
+Click and drag project folder to host VM
+
+Enable USB controller
+Select your webcam

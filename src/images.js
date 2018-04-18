@@ -9,7 +9,7 @@ let images = []; // create array of imgPaths
 
 exports.save = (picturesPath, contents, done) => {
   const base64Data = contents.replace(/^data:image\/png;base64,/, '');
-  const imgPath = path.join(picturesPath, `${new Date()}.png`);
+  const imgPath = path.join(picturesPath, `${new Date().getTime()}.png`);
   fs.writeFile(imgPath,
               base64Data,
               { encoding: 'base64' },
